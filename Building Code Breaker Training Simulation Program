@@ -1,0 +1,107 @@
+// Building Code Breaker Training.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+
+int main() {
+	// create word list to pull from
+	const int NUM_WORDS = 10;
+	enum fields { WORD, HINT, NUM_FIELDS };
+	string wordBank[NUM_WORDS][NUM_FIELDS] = {
+		{ "beans",  "Often eaten along hotdogs and hamburgers." },
+	{ "table",  "Where you place things." },
+	{ "bottle", "Water spills out of a " },
+	{ "chair",  "You're probably sitting on it." },
+	{ "music",  "Something you listen to." },
+	{ "phone",  "You should use it to call the police." },
+	{ "snake",  "A reptile with no legs." },
+	{ "bomb",   "in call of duty serch and destroy you plant a." },
+	{ "marker", "sharpie is a " },
+	{ "lunch",  "Food i eat at 12 pm is called." }
+	};
+
+	/*
+	instructions
+	*/
+	cout << "Welcome, recruit. The following simulation will train you to ";
+	cout << "unscramble code words\nsimilar to those that enemies have been ";
+	cout << "using to communicate.";
+	cout << "Remember, you can enter 'hint' to receive a tip if you get stuck.";
+
+
+	/*
+	select 1 of 10 words and scramble
+	*/
+	int totalAttempts = 0;
+	int incorrectGuesses = 0;
+
+	for (int i = 0; i < 3; i++) {
+		
+		// reset incorrect guess counter
+		incorrectGuesses = 0;
+
+		// seed random
+		srand(static_cast<unsigned int>(time(0)));
+
+		// choose a word
+		int choice = rand() % NUM_WORDS;
+		string theWord = wordBank[choice][WORD];
+		string theHint = wordBank[choice][HINT];
+
+		string jumbledWord = theWord;
+
+		// jumble the word
+		for (int j = 0; j < jumbledWord.length(); j++) {
+			
+			// select 2 random index
+			int index1 = rand() % jumbledWord.length();
+			int index2 = rand() % jumbledWord.length();
+
+			// swap characters at both index
+			char buffer = jumbledWord[index1];
+			jumbledWord[index1] = jumbledWord[index2];
+			jumbledWord[index2] = buffer;
+		}
+
+		cout << ">>>Your jumbled word is: " << jumbledWord << endl << endl;
+
+		// interaction loop
+		string playerGuess = "";
+		while (playerGuess != theWord) {
+			
+			// every 3 wrong guesses, offer help
+			if ((incorrectGuesses % 3 == 0) && (incorrectGuesses > 0)) {
+				cout << "---Stuck?? Enter 'hint'---\n";
+			}
+
+			totalAttempts++;
+
+			// players guess
+			cout << "Your guess: ";
+			cin >> playerGuess;
+
+			//  hint
+			if (playerGuess == "hint") {
+				// reset incorrect guess counter
+				incorrectGuesses = 0;
+				cout << theHint << endl << endl;
+			}
+			//player know if they're wrong
+			else if (playerGuess != theWord) {
+				incorrectGuesses++;
+				cout << "Incorrect!\n\n";
+			}
+		}
+		cout << "You got it! Nice!\n\n";
+	}
+
+	
+
+	return 0;
+}
